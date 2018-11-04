@@ -104,7 +104,7 @@ class UserController extends Controller
         if(Hash::check($request->oldpassword, $user->password)){
             $user->update([ 'password'=>bcrypt($request->password),]);
             Auth::logout(); //修改成功后退出登陆
-            return redirect()->route('index')->with('success','密码修改成功！请重新登陆');
+            return redirect()->route('login')->with('success','密码修改成功！请重新登陆');
         }else{
             return back()->withInput()->with('danger','修改密码失败!');
         }

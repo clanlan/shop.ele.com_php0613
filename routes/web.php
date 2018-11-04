@@ -45,6 +45,6 @@ Route::get('/activity/{activity}','ActivityController@show')->name('activity.sho
 //订单管理
 Route::get('order','OrderController@index')->name('order.index')->middleware('auth');
 Route::get('order/{order}','OrderController@show')->name('order.show')->middleware('auth');
-
+Route::get('order/{order}/cancel','OrderController@updateStatus')->name('order.updateStatus')->middleware('auth');
 //首页
 Route::get('/','CountController@index')->name('index');

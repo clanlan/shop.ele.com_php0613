@@ -12,9 +12,13 @@
 			<td>{{$date}}</td>
             @endforeach
 		</tr>
-		<tr class="text-danger">
+		<tr>
             @foreach($orderWeeks as $count)
+                @if($count==0)
                 <td>{{$count}}</td>
+                @else
+                    <td><strong style="color: red">{{$count}}</strong></td>
+                @endif
             @endforeach
 		</tr>
 	</table>
@@ -32,19 +36,94 @@
                 <th>{{ $day }}</th>
             @endforeach
         </tr>
-
         @foreach($goodsWeeks as $id=>$data)
             <tr>
-                <td>{{ $goods[$id] }}</td>
+                <td><a href="{{route('goods.show',[$id])}}">{{ $goodses[$id] }}</a></td>
                 @foreach($data as $total)
+                    @if($total==0)
                     <td>{{ $total }}</td>
+                    @else
+                    <td><strong style="color: red"> {{ $total }}</strong></td>
+                    @endif
+
                 @endforeach
             </tr>
         @endforeach
 	</table>
+</div>
+<!--最近3个月统计-->
+<div class="row ">
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading"><strong>最近三个月菜品销量统计</strong></div>
+
+            <!--最近3个月菜品销量统计图-->
+            <div class="panel-body">
+                <div id="main4" style="height:400px;"></div>
+            </div>
+            <table class="table table-bordered text-center">
+                <tr class="bg-success">
+                    <td>菜品名称</td>
+                    @foreach($Months as $month)
+                        <td>{{$month}}</td>@endforeach
+
+                </tr>
+                @foreach($goodsMonths as $id=>$amounts)
+                    <tr>
+                        <td><a href="{{route('goods.show',[$id])}}">{{$goodses[$id]}}</a></td>
+                        @foreach($amounts as $amount)
+                            @if($amount==0)
+                                <td>{{$amount}}</td>
+                            @else
+                                <td><strong style="color: red">{{$amount}}</strong></td>
+                            @endif
+                        @endforeach
+                    </tr>
+                @endforeach
+            </table>
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading"><strong>最近三个月订单量统计</strong></div>
+            <!--最近3个月统计图-->
+            <div class="panel-body">
+                <div id="main3" style="height:400px;"></div>
+            </div>
+            <table class="table table-bordered text-center">
+                <tr class="bg-success">
+                    <td>日期</td>
+                    @foreach($orderMonths as $month=>$monthCount)
+                        <td>{{$month}}</td>
+                    @endforeach
+                </tr>
+                <tr><td>单量</td>
+                    @foreach($orderMonths as $month=>$monthCount)
+                        @if($monthCount==0)
+                            <td>{{$monthCount}}</td>
+                        @else
+                            <td><strong style="color: red">{{$monthCount}}</strong></td>
+                        @endif
+                    @endforeach
+                </tr>
+                <tr>
+                    <td>成交金额</td>
+                    @foreach($money as $k=> $v)
+                    @if($v==0)
+                    <td>{{$v}}</td>
+                    @else
+                    <td><strong class="text-success">{{$v}}</strong></td>
+                    @endif
+                    @endforeach
+                </tr>
+            </table>
+
+        </div>
+    </div>
 
 </div>
-<script src="/js/echarts.common.min.js"></script>
+<script src="/js/echarts.simple.min.js"></script>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'),'light');
@@ -81,7 +160,6 @@
         tooltip: {
             trigger: 'axis'
         },
-
         grid: {
             left: '3%',
             right: '4%',
@@ -105,6 +183,66 @@
     };
     // 使用刚指定的配置项和数据显示图表。
     myChart2.setOption(option2);
+
+    //图3
+    var myChart3 = echarts.init(document.getElementById('main3'),'light');
+    // 指定图表的配置项和数据
+    var option3 = {
+        title: {
+            text: '最近3个月订单量'
+        },
+        tooltip: {},
+        legend: {
+            data:['订单量']
+        },
+        xAxis: {
+            data: @php echo json_encode(array_keys($orderMonths)) @endphp
+        },
+        yAxis: {},
+        series: [{
+            name: '销量',
+            type: 'line',
+            data: @php echo json_encode(array_values($orderMonths)) @endphp
+        }]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart3.setOption(option3);
+
+    //图4
+    // 基于准备好的dom，初始化echarts实例
+    var myChart4 = echarts.init(document.getElementById('main4'),'light');
+    // 指定图表的配置项和数据
+    var option4= {
+        title: {
+            text: '最近三个月菜品销量'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: @php echo json_encode($Months) @endphp
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: @php echo json_encode($series2) @endphp
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart4.setOption(option4);
+
 </script>
 
 

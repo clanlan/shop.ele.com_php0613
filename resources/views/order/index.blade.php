@@ -9,17 +9,19 @@
             <option value=" ">按日期查找</option>
             <option value="1">今日订单</option>
             <option value="2">本周订单</option>
-            <option value="3">本月订单</option>
+            <option value="3">近1月订单</option>
         </select>
         <input type="text" name="keywords" placeholder="订单号/姓名/电话" class="form-control"/>
         {{csrf_field()}}
         <input type="submit" value="搜索" class="btn btn-success"/>
     </form>
-    {{--<div class="btn-group pull-right" role="group" aria-label="...">--}}
-        {{--<button type="button" class="btn btn-default" id="btn1"><span class="glyphicon glyphicon-arrow-up" style="color:#aaaaaa"></span> 价格</a>--}}
-        {{--<button type="button" class="btn btn-default" id="btn2"><span class="glyphicon glyphicon-arrow-down" style="color:#aaaaaa"></span> 评分</button>--}}
-        {{--<button type="button" class="btn btn-default" id="btn3"><span class="glyphicon glyphicon-arrow-down" style="color:#aaaaaa"></span> 销量</button>--}}
-    {{--</div>--}}
+    <div class="btn-group pull-right" role="group" aria-label="...">
+        <a href="{{route('order.index')}}" class="btn btn-default" id="btn1">全部</a>
+        <a href="{{route('order.index',['status'=>'unPay'])}}" class="btn btn-default" id="btn1">待支付</a>
+        <a href="{{route('order.index',['status'=>'unSend'])}}" class="btn btn-default" id="btn2">待发货</a>
+        <a href="{{route('order.index',['status'=>'unSure'])}}" class="btn btn-default" id="btn3">待确认</a>
+        <a href="{{route('order.index',['status'=>'success'])}}" class="btn btn-default" id="btn3">已完成</a>
+    </div>
 
 </div>
 
@@ -58,7 +60,11 @@
             @elseif($order->status==3) <span class="text-success">已完成</span>
             @endif</td>
         <td>
+            @if($order->status==0)
+            <a href="{{route('order.updateStatus',[$order])}}" class="btn btn-default">取消订单</a>
+            @else
             <a href="{{route('order.show',[$order])}}" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> 查看</a>
+            @endif
         </td>
     </tr>
     @endforeach

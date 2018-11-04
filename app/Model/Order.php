@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $fillable=['status'];
     //获取订单所属商家信息 1对多反向
     public function shop(){
         return $this->belongsTo(Shop::class,'shop_id');
@@ -15,5 +16,7 @@ class Order extends Model
     public function goods(){
         return $this->hasMany(OrderDetail::class,'order_id');
     }
+
+
 
 }

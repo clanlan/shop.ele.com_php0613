@@ -3,7 +3,7 @@
 <div class="panel panel-primary">
     <!-- Default panel contents -->
     <div class="panel-heading">订单编号: {{$order->sn}}
-    <span class="pull-right">@if($order->status==-1) 已取消
+    <span class="pull-right">订单状态: @if($order->status==-1) 已取消
         @elseif($order->status==0) 待支付
         @elseif($order->status==1) 待发货
         @elseif($order->status==2) 待确认
@@ -48,7 +48,10 @@
             </div>
             <div class="col-xs-8 text-right">
                 <p>下单时间: {{$order->created_at}}</p>
-                @if($order->status==1) <a href="" class="btn btn-warning">发  货</a>@else<a href="{{route('order.index')}}" class="btn btn-default">返回</a>@endif
+                @if($order->status==0) <a href="{{route('order.updateStatus',$order)}}" class="btn btn-warning">取消订单</a>
+                @elseif($order->status==1))<a href="" class="btn btn-warning">发  货</a>
+                @endif
+                <a href="{{route('order.index')}}" class="btn btn-default">返回</a>
             </div>
         </div>
 

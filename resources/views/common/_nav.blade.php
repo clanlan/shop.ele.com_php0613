@@ -1,4 +1,7 @@
-<nav class="navbar navbar-inverse navbar-static-top" style="border-radius:0;">
+<style>
+    body { padding-top: 70px; }
+</style>
+<nav class="navbar navbar-inverse navbar-fixed-top" style="border-radius:0;">
     <div class="container">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -39,6 +42,7 @@
                 </li>
                 <li><a href="/order">订单管理<span class="sr-only">(current)</span></a></li>
                 <li><a href="/activity">活动中心<span class="sr-only">(current)</span></a></li>
+                <li><a href="/prize">新品试用<span class="sr-only">(current)</span></a></li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -49,7 +53,7 @@
                 @auth
                 <li class="dropdown">
                     <a href="/user" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{auth()->user()->img}}" style="height:36px; border-radius:100%;"/>
+                        <img src="{{auth()->user()->img}}" style="height:24px; border-radius:100%;"/>
                         {{auth()->user()->name}}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{route('index')}}">个人中心</a></li>

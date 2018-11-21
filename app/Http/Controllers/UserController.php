@@ -17,63 +17,63 @@ class UserController extends Controller
         ]);
     }
 
-    //注册店铺
+    //注册商家
     public function create(){
-        $cates=DB::table('shop_categories')->where('status',1)->get();
-        return view('user.create',compact('cates'));
+        return view('user.create');
     }
     //保存
     public function store(Request $request,ImageUploadHandler $uploader){
-
-        //保存店铺图片
-        $path1='';
-        $path2='';
-        if ($request->img1) {
-            $result = $uploader->save($request->img1, 'shop','shoplogo');
-            if ($result) { $path1 = $result['path']; }
-        }
-        //保存账号图片
-        if ($request->img2) {
-            $result = $uploader->save($request->img2, 'shop','shoplogo');
-            if ($result) { $path2 = $result['path']; }
-        }
-        //开启事务
-        DB::beginTransaction();
-        $sql1=DB::table('shops')->insertGetId([
-            'shop_category_id'=>$request->shop_category_id,
-            'shop_name'=>$request->shop_name,
-            'start_send'=>$request->start_send ?? '0',
-            'send_cost'=>$request->send_cost ?? '0',
-            'status'=>0,
-            'notice'=>$request->notice,
-            'discount'=>$request->discount,
-            'shop_img'=>$path1,
-            'brand'=>$request->brand ?? 0,
-            'on_time'=>$request->on_time ?? 0,
-            'fengniao'=>$request->fengniao ?? 0,
-            'bao'=>$request->bao ?? 0,
-            'piao'=>$request->piao ?? 0,
-            'zhun'=>$request->zhun ?? 0,
+        //验证数据
+        $val=$this->validate($request, [
+            'name' => 'required|min:3|max:20',
+            'email' => 'email|unique:users',
+            'tel' => [
+                'required',
+                'regex:/^1[3-9]\d{9}$/',
+                'unique:users'
+            ],
+            'password' => [
+                'required',
+                'regex:/^\w{6,16}$/',
+                'confirmed'
+            ],
+            'password_confirmation' => 'required|same:password',
+        ],[
+            'name.required' => '用户名不能为空',
+            'name.min' => '用户名不能少于三位',
+            'name.max' => '用户名不能多于20位',
+            'email.email' => '邮箱格式不正确',
+            'email.unique' => '此邮箱已存在',
+            'tel.required' => '手机号不能为空',
+            'tel.regex' => '手机号格式不正确',
+            'tel.unique' => '电话号码已存在',
+            'password.required' => '请输入密码',
+            'password.regex' => '6-16为密码.可以是数字,字母或下划线',
+            'password.confirmed' => "密码与确认密码不匹配",
+            'password_confirmation.required' => "确认密码不能为空",
+            'password_confirmation.same' => '',
         ]);
-        $sql2=DB::table('users')->insert([
+        if($val==false){ return back()->withInput();}
+        //接收图片 保存图片 shopCategory文件夹名 shopcate图片文件名
+        if ($request->img) {
+            $result = $uploader->save($request->img, 'shopusre','user');
+            if ($result) {
+                $path = $result['path'];
+            }
+        }else{$path='';}
+        $user=User::create([
             'name'=>$request->name,
             'email'=>$request->email,
             'tel'=>$request->tel,
             'password'=>bcrypt($request->password),
-            'shop_id'=>$sql1,
+            'shop_id'=>0,
             'status'=>0,
-            'img'=>$path2,
+            'img'=>$path,
         ]);
-        if($sql1 && $sql2){
-            DB::commit();
-            return redirect()->route('index')->with('success','注册成功!');
-        }else{
-            DB::rollBack();
-            return back()->with('danger','注册失败!')->withInput();
-        }
 
-
+        return redirect()->route('shop.create',compact('user'))->with('success','请完成店铺信息');
     }
+
     //修改
     public function edit(){}
     //更新

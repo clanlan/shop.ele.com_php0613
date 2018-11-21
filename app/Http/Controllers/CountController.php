@@ -19,7 +19,7 @@ class CountController extends Controller
         }
         $shop=Shop::find($user->shop_id);
         //最近1周订单量统计
-        $time_start=date('Y-m-d 00:00:00',strtotime('-7 day'));
+        $time_start=date('Y-m-d 00:00:00',strtotime('-6 day'));
         $time_end=date('Y-m-d 23:59:59');
         $sql="select date(created_at) as date,count(*) as count from orders where created_at >= '{$time_start}' and created_at <= '{$time_end}' and shop_id={$user->shop_id} GROUP by date(created_at)";
         $rows=DB::select($sql);
@@ -90,10 +90,10 @@ class CountController extends Controller
 //            GROUP BY MONTH(created_at)
 //        ");
 //
-        $rows3=DB::select("SELECT MONTH(orders.created_at) AS month,count(orders.id) AS count,sum(order_details.amount*order_details.goods_price) as money
-            FROM orders JOIN order_details ON orders.id=order_details.order_id WHERE orders.created_at >= '{$month_start}'
-            AND orders.created_at <= '{$time_end}' AND shop_id = {$shop->id}
-            GROUP BY MONTH(orders.created_at)
+        $rows3=DB::select("SELECT MONTH(created_at) AS month,count(*) AS count,sum(total) as money
+            FROM orders  WHERE created_at >= '{$month_start}'
+            AND created_at <= '{$time_end}' AND shop_id = {$shop->id}
+            GROUP BY MONTH(created_at)
 ");
         //构造3个月统计格式
         $orderMonths=[];

@@ -15,12 +15,14 @@
 //    return view('welcome');
 //})->name('index');
 
-
+//商家店铺注册
+Route::get('shop/create/{user}','ShopController@create')->name('shop.create');
+Route::post('shop/store/{user}','ShopController@store')->name('shop.store');
 //修改密码
 Route::get('user/resetpwd','UserController@resetpwd')->name('user.resetpwd')->middleware('auth');
 Route::post('user/{user}/updatepwd','UserController@updatepwd')->name('user.updatepwd')->middleware('auth');
 //账号管理
-Route::resource('user','UserController')    ;
+Route::resource('user','UserController')->middleware('auth');
 
 //商品分类
 Route::resource('goodsCategory','GoodsCategoryController')->middleware('auth');
@@ -47,4 +49,10 @@ Route::get('order','OrderController@index')->name('order.index')->middleware('au
 Route::get('order/{order}','OrderController@show')->name('order.show')->middleware('auth');
 Route::get('order/{order}/cancel','OrderController@updateStatus')->name('order.updateStatus')->middleware('auth');
 //首页
-Route::get('/','CountController@index')->name('index');
+Route::get('/','CountController@index')->name('index')->middleware('auth');
+
+//抽奖活动
+Route::get('prize','PrizeController@index')->name('prize.index')->middleware('auth');
+Route::get('prize/{prize}/show','PrizeController@show')->name('prize.show')->middleware('auth');
+Route::get('prize/{prize}/apply','PrizeController@apply')->name('prize.apply')->middleware('auth');
+Route::get('prize/{prize}/wonList','PrizeController@wonList')->name('prize.wonList')->middleware('auth');

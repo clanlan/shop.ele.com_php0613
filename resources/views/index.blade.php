@@ -7,18 +7,15 @@
 <div class="panel panel-default">
 	<div class="panel-heading"><strong>最近一周订单量统计</strong></div>
 	<table class="table table-bordered text-center">
-		<tr>
+		<tr><td>日期</td>
             @foreach($orderWeeks as $date=>$count)
 			<td>{{$date}}</td>
             @endforeach
 		</tr>
 		<tr>
+            <td>订单量</td>
             @foreach($orderWeeks as $count)
-                @if($count==0)
-                <td>{{$count}}</td>
-                @else
-                    <td><strong style="color: red">{{$count}}</strong></td>
-                @endif
+                <td @if($count!=0)class="text-danger" @endif>{{$count}}</td>
             @endforeach
 		</tr>
 	</table>
@@ -40,12 +37,7 @@
             <tr>
                 <td><a href="{{route('goods.show',[$id])}}">{{ $goodses[$id] }}</a></td>
                 @foreach($data as $total)
-                    @if($total==0)
-                    <td>{{ $total }}</td>
-                    @else
-                    <td><strong style="color: red"> {{ $total }}</strong></td>
-                    @endif
-
+                    <td @if($total!=0)class="text-danger" @endif>{{ $total }}</td>
                 @endforeach
             </tr>
         @endforeach
@@ -66,17 +58,12 @@
                     <td>菜品名称</td>
                     @foreach($Months as $month)
                         <td>{{$month}}</td>@endforeach
-
                 </tr>
                 @foreach($goodsMonths as $id=>$amounts)
                     <tr>
                         <td><a href="{{route('goods.show',[$id])}}">{{$goodses[$id]}}</a></td>
                         @foreach($amounts as $amount)
-                            @if($amount==0)
-                                <td>{{$amount}}</td>
-                            @else
-                                <td><strong style="color: red">{{$amount}}</strong></td>
-                            @endif
+                        <td @if($amount!=0)class="text-danger" @endif>{{$amount}}</td>
                         @endforeach
                     </tr>
                 @endforeach
@@ -100,21 +87,13 @@
                 </tr>
                 <tr><td>单量</td>
                     @foreach($orderMonths as $month=>$monthCount)
-                        @if($monthCount==0)
-                            <td>{{$monthCount}}</td>
-                        @else
-                            <td><strong style="color: red">{{$monthCount}}</strong></td>
-                        @endif
+                    <td @if($monthCount!=0)class="text-danger" @endif>{{$monthCount}}</td>
                     @endforeach
                 </tr>
                 <tr>
                     <td>成交金额</td>
                     @foreach($money as $k=> $v)
-                    @if($v==0)
-                    <td>{{$v}}</td>
-                    @else
-                    <td><strong class="text-success">{{$v}}</strong></td>
-                    @endif
+                    <td @if($v!=0)class="text-primary" @endif>{{$v}}</td>
                     @endforeach
                 </tr>
             </table>
@@ -123,7 +102,7 @@
     </div>
 
 </div>
-<script src="/js/echarts.simple.min.js"></script>
+<script src="/js/echarts.common.min.js"></script>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'),'light');
@@ -141,7 +120,7 @@
         },
         yAxis: {},
         series: [{
-            name: '销量',
+            name: '订单量',
             type: 'line',
             data: @php echo json_encode(array_values($orderWeeks)) @endphp
         }]
@@ -200,7 +179,7 @@
         },
         yAxis: {},
         series: [{
-            name: '销量',
+            name: '订单量',
             type: 'line',
             data: @php echo json_encode(array_values($orderMonths)) @endphp
         }]
